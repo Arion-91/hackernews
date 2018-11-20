@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './App.css';
 import Search from './components/Search';
 import Table from './components/Table';
@@ -38,23 +38,25 @@ class App extends Component {
     onDismiss(id) {
         const isNotId = item => item.objectID !== id;
         const updatedList = this.state.list.filter(isNotId);
-        this.setState({ list: updatedList });
+        this.setState({list: updatedList});
     };
 
     onSearchChange(event) {
-        this.setState({ searchTerm: event.target.value });
+        this.setState({searchTerm: event.target.value});
     }
 
     render() {
-        const { searchTerm, list} = this.state;
+        const {searchTerm, list} = this.state;
         return (
-            <div className="App">
-                <Search
-                    value={searchTerm}
-                    onChange={this.onSearchChange}
-                >
-                    Поиск
-                </Search>
+            <div className='page'>
+                <div className="interactions">
+                    <Search
+                        value={searchTerm}
+                        onChange={this.onSearchChange}
+                    >
+                        Поиск
+                    </Search>
+                </div>
                 <Table
                     list={list}
                     pattern={searchTerm}
