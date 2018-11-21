@@ -33,7 +33,7 @@ class App extends Component {
     }
 
     onSearchSubmit(event) {
-        const {searchTerm} = this.state;
+        const { searchTerm } = this.state;
         this.fetchSearchTopStories(searchTerm);
         event.preventDefault();
     }
@@ -56,12 +56,11 @@ class App extends Component {
     };
 
     onSearchChange(event) {
-        this.setState({searchTerm: event.target.value});
+        this.setState({ searchTerm: event.target.value });
     }
 
     render() {
         const { searchTerm, result } = this.state;
-        // if (!result) { return null; }
         return (
             <div className='page'>
                 <div className="interactions">
@@ -73,12 +72,11 @@ class App extends Component {
                         Поиск
                     </Search>
                 </div>
-                {result ?
+                {result &&
                     <Table
                         list={result.hits}
                         onDismiss={this.onDismiss}
                     />
-                    : null
                 }
             </div>
         );
