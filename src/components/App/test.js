@@ -1,7 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import renderer from 'react-test-renderer';
+import Enzyme, { shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import App, { Search, Button, Table } from './index';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('App', () => {
     it('renders without crashing', () => {
@@ -46,6 +50,14 @@ describe('Button', () => {
         const tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
+
+    // чтобы писать нужно читать про enzyme
+    // it('shows button', () => {
+    //     const element = shallow(
+    //         <Button { ...props } />
+    //     );
+    //     expect(element.find('.table-row').length).toBe(2);
+    // });
 });
 
 describe('Table', () => {
@@ -65,5 +77,12 @@ describe('Table', () => {
         );
         const tree = component.toJSON();
         expect(tree).toMatchSnapshot();
+    });
+
+    it('shows two items in list', () => {
+        const element = shallow(
+            <Table { ...props } />
+        );
+        expect(element.find('.table-row').length).toBe(2);
     });
 });

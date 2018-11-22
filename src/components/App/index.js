@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+// import PropTypes from 'prop-types';
 import './index.css';
 import Search from '../Search';
 import Table from '../Table';
