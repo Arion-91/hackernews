@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from './Button';
+import Button from '../Button';
 
 const Table = ({list, onDismiss}) =>
     <div className="table">
@@ -12,18 +12,15 @@ const Table = ({list, onDismiss}) =>
                 <span>{item.num_comments}</span>
                 <span>{item.points}</span>
                 <span>
-                    <Button onClick={() => onDismiss(item.objectID)} className="button-inline">
+                    <Button
+                        onClick={() => onDismiss(item.objectID)}
+                        className="button-inline"
+                    >
                         Отбросить
                     </Button>
                 </span>
             </div>
         )}
     </div>;
-
-function isSearched(searchTerm) {
-    return function (item) {
-        return item.title.toLowerCase().includes(searchTerm.toLowerCase());
-    }
-}
 
 export default Table;
