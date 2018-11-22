@@ -97,7 +97,7 @@ class App extends Component {
         const isNotId = item => item.objectID !== id;
         const updatedList = hits.filter(isNotId);
         this.setState({
-            result: {
+            results: {
                 ...results,
                 [searchKey]: {hits: updatedList, page}
             }
