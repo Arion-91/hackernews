@@ -104,7 +104,6 @@ Table.propTypes = {
             points: PropTypes.number,
         })
     ).isRequired,
-    onSort: PropTypes.func.isRequired,
     onDismiss: PropTypes.func.isRequired,
 };
 

@@ -43,6 +43,7 @@ class App extends Component {
         this.setState({
             isLoading: true
         });
+
         axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
             .then(result => this._isMounted && this.setSearchTopStories(result.data))
             .catch(error => this._isMounted && this.setState({ error }));
@@ -61,32 +62,19 @@ class App extends Component {
 
     setSearchTopStories(result) {
         const { hits, page } = result;
-        const { searchKey, results } = this.state;
 
-        const oldHits = results && results[searchKey]
-            ? results[searchKey].hits
-            : [];
-
-        const updateHits = [
-            ...oldHits,
-            ...hits
-        ];
-
-        this.setState({
-            results: {
-                ...results,
-                [searchKey]: {hits: updateHits, page}
-            },
-            isLoading: false
-        });
+        this.setState(updateSearchTopStoriesState(hits, page));
     }
 
     componentDidMount() {
         this._isMounted = true;
 
-        const { searchTerm } = this.state;
-        this.setState({ searchKey: searchTerm });
-        this.fetchSearchTopStories(searchTerm);
+        this.setState((prevSate) => {
+            const { searchTerm } = prevSate;
+            return { searchKey: searchTerm };
+        });
+
+        this.fetchSearchTopStories(this.state.searchTerm);
     }
 
     componentWillUnmount() {
@@ -94,17 +82,9 @@ class App extends Component {
     }
 
     onDismiss(id) {
-        const { searchKey, results } = this.state;
-        const { hits, page } = results[searchKey];
-
         const isNotId = item => item.objectID !== id;
-        const updatedList = hits.filter(isNotId);
-        this.setState({
-            results: {
-                ...results,
-                [searchKey]: {hits: updatedList, page}
-            }
-        });
+
+        this.setState(updateStoriesStateAfterDismiss(isNotId))
     };
 
     onSearchChange(event) {
@@ -112,7 +92,7 @@ class App extends Component {
     }
 
     render() {
-        const { searchTerm, results, searchKey, error, isLoading, sortKey, isSortReverse } = this.state;
+        const { searchTerm, results, searchKey, error, isLoading } = this.state;
         const page = (results && results[searchKey] && results[searchKey].page) || 0;
         const list = (results && results[searchKey] && results[searchKey].hits) || [];
 
@@ -161,6 +141,41 @@ const withLoading = (Component) => ({ isLoading, ...rest }) =>
         : <Component { ...rest }/>;
 
 const ButtonWithLoading = withLoading(Button);
+
+const updateSearchTopStoriesState = (hits, page) => (prevState) => {
+    const {searchKey, results} = prevState;
+
+    const oldHits = results && results[searchKey]
+        ? results[searchKey].hits
+        : [];
+
+    const updateHits = [
+        ...oldHits,
+        ...hits
+    ];
+
+    return {
+        results: {
+            ...results,
+            [searchKey]: {hits: updateHits, page}
+        },
+        isLoading: false
+    };
+};
+
+const updateStoriesStateAfterDismiss = (isNotId) => (prevState) => {
+    const { searchKey, results } = prevState;
+    const { hits, page } = results[searchKey];
+
+    const updatedList = hits.filter(isNotId);
+
+    return {
+        results: {
+            ...results,
+            [searchKey]: {hits: updatedList, page}
+        }
+    };
+};
 
 export default App;
 
