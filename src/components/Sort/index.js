@@ -13,7 +13,7 @@ class Sort extends Component {
         return (
             <Button
                 onClick={() => onSort(sortKey)}
-                className={sortClass.join(' ')}
+                className={sortClass}
             >
                 {children}
             </Button>
