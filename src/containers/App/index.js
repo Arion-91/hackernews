@@ -1,25 +1,16 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import './index.css';
 import Search from '../../components/Search';
 import Table from '../../components/Table';
 import Button from "../../components/Button";
-import {
-    DEFAULT_HPP,
-    PARAM_HPP,
-    PARAM_PAGE,
-    DEFAULT_QUERY,
-    PARAM_SEARCH,
-    PATH_BASE, PATH_SEARCH
-} from '../../constants';
 import {connect} from "react-redux";
-import {loadList} from "../../actions/Article";
+import {searchWrite, searchSubmit} from "../../actions/Search";
 
 class App extends Component {
     // _isMounted = false;
     //
-    // constructor(props) {
-    //     super(props);
+    constructor(props) {
+        super(props);
     //
     //     this.state = {
     //         results: null,
@@ -33,9 +24,9 @@ class App extends Component {
     //     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     //     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     //     this.onSearchChange = this.onSearchChange.bind(this);
-    //     this.onSearchSubmit = this.onSearchSubmit.bind(this);
+         this.onSearchSubmit = this.onSearchSubmit.bind(this);
     //     this.onDismiss = this.onDismiss.bind(this);
-    // }
+    }
     //
     // needsToSearchTopStories(searchTerm) {
     //     return !this.state.results[searchTerm];
@@ -51,16 +42,17 @@ class App extends Component {
     //         .catch(error => this._isMounted && this.setState({ error }));
     // }
     //
-    // onSearchSubmit(event) {
-    //     const { searchTerm } = this.state;
-    //     this.setState({ searchKey: searchTerm });
-    //
-    //     if (this.needsToSearchTopStories(searchTerm)) {
-    //         this.fetchSearchTopStories(searchTerm);
-    //     }
-    //
-    //     event.preventDefault();
-    // }
+    onSearchSubmit(event, func) {
+        // const { searchTerm } = this.state;
+        // this.setState({ searchKey: searchTerm });
+        //
+        // if (this.needsToSearchTopStories(searchTerm)) {
+        //     this.fetchSearchTopStories(searchTerm);
+        // }
+        func();
+
+        event.preventDefault();
+    }
     //
     // setSearchTopStories(result) {
     //     const { hits, page } = result;
@@ -89,27 +81,29 @@ class App extends Component {
     //     this.setState(updateStoriesStateAfterDismiss(isNotId))
     // };
     //
-    // onSearchChange(event) {
-    //     this.setState({ searchTerm: event.target.value });
-    // }
+    onSearchChange(event, func) {
+        // this.setState({ searchTerm: event.target.value });
+        func(event.target.value);
+    }
 
     render() {
-        const { searchTerm, list, searchKey, error, isLoading, loadList } = this.props;
+        const { search, searchWrite, searchSubmit } = this.props;
+        const {searchTerm} = search;
         // const page = (articles && articles[searchKey] && articles[searchKey].page) || 0;
-        const page = 0;
+        // const page = 0;
         // const list = (articles && articles[searchKey] && articles[searchKey].hits) || [];
 
-        if (error) {
-            return <p>Что-то произошло не так.</p>
-        }
+        // if (error) {
+        //     return <p>Что-то произошло не так.</p>
+        // }
 
         return (
             <div className='page'>
                 <div className="interactions">
                     <Search
                         value={searchTerm}
-                        onChange={this.onSearchChange}
-                        onSubmit={this.onSearchSubmit}
+                        onChange={(event) => this.onSearchChange(event, searchWrite)}
+                        onSubmit={(event) => this.onSearchSubmit(event, searchSubmit)}
                     >
                         Поиск
                     </Search>
@@ -182,14 +176,17 @@ const ButtonWithLoading = withLoading(Button);
 // };
 
 const mapStateToProps = store => ({
-    list: store.articles.list,
-    searchTerm: store.articles.searchTerm,
-    searchKey: store.articles.searchKey,
-    error: store.articles.error,
+    // list: store.articles.list,
+    // searchTerm: store.articles.searchTerm,
+    // searchKey: store.articles.searchKey,
+    // error: store.articles.error,
+    search: store.search,
 });
 
 const mapDispatchToProps = dispatch => ({
-    loadList: page => dispatch(loadList(page)),
+    searchWrite: key => dispatch(searchWrite(key)),
+    searchSubmit: () => dispatch(searchSubmit()),
+    // loadList: page => dispatch(loadList(page)),
     // getPhotos: year => dispatch(getPhotos(year)),
     // handleLogin: () => dispatch(handleLogin()),
 });
