@@ -10,7 +10,7 @@ const initialState = {
     isLoading: false,
 };
 
-function articleReducer(state = initialState, action) {
+export function articleReducer(state = initialState, action) {
     switch (action.type) {
         case SEARCH_LIST:
             return {
