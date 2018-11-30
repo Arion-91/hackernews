@@ -3,7 +3,7 @@ import {DEFAULT_QUERY} from "../constants";
 import {SEARCH_LIST, LOAD_LIST, SORT, DISMISS_ARTICLE} from "../actions/Article";
 
 const initialState = {
-    articles: [],
+    list: [],
     searchKey: '',
     searchTerm: DEFAULT_QUERY,
     error: null,
