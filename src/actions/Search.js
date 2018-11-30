@@ -1,5 +1,3 @@
-import {DEFAULT_QUERY} from "../constants";
-
 export const SEARCH_WRITE = 'SEARCH_WRITE';
 export const SEARCH_SUBMIT = 'SEARCH_SUBMIT';
 
