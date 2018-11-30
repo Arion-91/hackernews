@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import './index.css';
-import Search from '../Search';
-import Table from '../Table';
-import Button from "../Button";
+import Search from '../../components/Search';
+import Table from '../../components/Table';
+import Button from "../../components/Button";
 import {
     DEFAULT_HPP,
     PARAM_HPP,
@@ -12,6 +12,7 @@ import {
     PARAM_SEARCH,
     PATH_BASE, PATH_SEARCH
 } from '../../constants';
+import {connect} from "react-redux";
 
 class App extends Component {
     _isMounted = false;
@@ -177,7 +178,16 @@ const updateStoriesStateAfterDismiss = (isNotId) => (prevState) => {
     };
 };
 
-export default App;
+const mapStateToProps = store => ({
+    actions: store.actions,
+});
+
+// const mapDispatchToProps = dispatch => ({
+//     getPhotos: year => dispatch(getPhotos(year)),
+//     handleLogin: () => dispatch(handleLogin()),
+// });
+
+export default connect(mapStateToProps)(App);
 
 export {
     Button,
