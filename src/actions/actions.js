@@ -18,27 +18,27 @@ export const DISMISS_ARTICLE = 'DISMISS_ARTICLE';
 export function searchList(text) {
     return {
         type: SEARCH_LIST,
-        text
+        payload: text,
     }
 }
 
 export function sortBy(title) {
     return {
         type: SORT,
-        title
+        payload: title,
     }
 }
 
 export function loadList(page) {
     return {
         type: LOAD_LIST,
-        page
+        payload: page,
     }
 }
 
 export function dismissArticle(id) {
     return {
         type: DISMISS_ARTICLE,
-        id
+        payload: id,
     }
 }
