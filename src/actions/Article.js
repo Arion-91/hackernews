@@ -1,19 +1,7 @@
-/*
- * типы действий
- */
-
 export const SEARCH_LIST = 'SEARCH_LIST';
 export const SORT = 'SORT';
 export const LOAD_LIST = 'LOAD_LIST';
 export const DISMISS_ARTICLE = 'DISMISS_ARTICLE';
-
-/*
- * другие константы
- */
-
-/*
- * генераторы действий
- */
 
 export function searchList(text) {
     return {
