@@ -1,7 +1,13 @@
-import {GET_ARTICLES_REQUEST, GET_ARTICLES_SUCCESS, GET_ARTICLES_FAIL, SORT_ARTICLES, DISMISS_ARTICLE} from "../actions/Article";
+import {
+    GET_ARTICLES_REQUEST,
+    GET_ARTICLES_SUCCESS,
+    GET_ARTICLES_FAIL,
+    SORT_ARTICLES,
+    DISMISS_ARTICLE
+} from "../actions/Article";
 
 const initialState = {
-    list: [],
+    results: null,
     error: null,
     isLoading: false,
 };
@@ -16,7 +22,7 @@ export function articleReducer(state = initialState, action) {
             };
         case GET_ARTICLES_SUCCESS:
             return {
-                list: [...state.list, action.payload],
+                results: updateSearchTopStoriesState(state, action.payload),
                 error: '',
                 isLoading: false,
             };
@@ -26,16 +32,35 @@ export function articleReducer(state = initialState, action) {
                 error: action.payload,
                 isLoading: false,
             };
-        case SORT_ARTICLES:
-            return {
-                ...state,
-                list: state.list.sort(),
-            };
-        case DISMISS_ARTICLE:
-            return {
-                ...state,
-            };
+        // case SORT_ARTICLES:
+        //     return {
+        //         ...state,
+        //         list: state.results.sort(),
+        //     };
+        // case DISMISS_ARTICLE:
+        //     return {
+        //         ...state,
+        //     };
         default:
             return state;
     }
 }
+
+const updateSearchTopStoriesState = (prevState, {searchTerm, hits, page}) => {
+    const {results} = prevState;
+    const searchKey = searchTerm;
+
+    const oldHits = results && results[searchKey]
+        ? results[searchKey].hits
+        : [];
+
+    const updateHits = [
+        ...oldHits,
+        ...hits
+    ];
+
+    return {
+        ...results,
+        [searchKey]: {hits: updateHits, page}
+    };
+};

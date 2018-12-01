@@ -5,10 +5,11 @@ import Table from '../../components/Table';
 import Button from "../../components/Button";
 import {connect} from "react-redux";
 import {searchWrite, searchSubmit} from "../../actions/Search";
+import {getMoreArticles} from "../../actions/Article";
 
 class App extends Component {
-    // _isMounted = false;
-    //
+    _isMounted = false;
+
     constructor(props) {
         super(props);
     //
@@ -22,26 +23,27 @@ class App extends Component {
     //
     //     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
     //     this.setSearchTopStories = this.setSearchTopStories.bind(this);
-    //     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
+        this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     //     this.onSearchChange = this.onSearchChange.bind(this);
-         this.onSearchSubmit = this.onSearchSubmit.bind(this);
-    //     this.onDismiss = this.onDismiss.bind(this);
+        this.onSearchSubmit = this.onSearchSubmit.bind(this);
+        this.onDismiss = this.onDismiss.bind(this);
     }
     //
     // needsToSearchTopStories(searchTerm) {
     //     return !this.state.results[searchTerm];
     // }
-    //
-    // fetchSearchTopStories(searchTerm, page = 0) {
-    //     this.setState({
-    //         isLoading: true
-    //     });
-    //
-    //     axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
-    //         .then(result => this._isMounted && this.setSearchTopStories(result.data))
-    //         .catch(error => this._isMounted && this.setState({ error }));
-    // }
-    //
+
+    fetchSearchTopStories(func, searchTerm, page = 0) {
+        func(searchTerm, page);
+        // this.setState({
+        //     isLoading: true
+        // });
+        //
+        // axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
+        //     .then(result => this._isMounted && this.setSearchTopStories(result.data))
+        //     .catch(error => this._isMounted && this.setState({ error }));
+    }
+
     onSearchSubmit(event, func) {
         // const { searchTerm } = this.state;
         // this.setState({ searchKey: searchTerm });
@@ -53,79 +55,74 @@ class App extends Component {
 
         event.preventDefault();
     }
-    //
+
     // setSearchTopStories(result) {
     //     const { hits, page } = result;
     //
     //     this.setState(updateSearchTopStoriesState(hits, page));
     // }
     //
-    // componentDidMount() {
-    //     this._isMounted = true;
+    componentDidMount() {
+        this._isMounted = true;
+        this.fetchSearchTopStories(this.props.getMoreArticles, this.props.search.searchTerm);
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    onDismiss(id) {
+        // const isNotId = item => item.objectID !== id;
+        //
+        // this.setState(updateStoriesStateAfterDismiss(isNotId))
+    };
     //
-    //     this.setState((prevSate) => {
-    //         const { searchTerm } = prevSate;
-    //         return { searchKey: searchTerm };
-    //     });
-    //
-    //     this.fetchSearchTopStories(this.state.searchTerm);
-    // }
-    //
-    // componentWillUnmount() {
-    //     this._isMounted = false;
-    // }
-    //
-    // onDismiss(id) {
-    //     const isNotId = item => item.objectID !== id;
-    //
-    //     this.setState(updateStoriesStateAfterDismiss(isNotId))
-    // };
-    //
-    onSearchChange(event, func) {
-        // this.setState({ searchTerm: event.target.value });
+    onSearchChange(func, event) {
         func(event.target.value);
     }
 
     render() {
-        const { search, searchWrite, searchSubmit } = this.props;
-        const {searchTerm} = search;
+        const { search, articles, searchWrite, searchSubmit, getMoreArticles } = this.props;
+        const { searchKey, searchTerm } = search;
+        const { results, isLoading, error } = articles;
+        const page = 0;
         // const page = (articles && articles[searchKey] && articles[searchKey].page) || 0;
         // const page = 0;
-        // const list = (articles && articles[searchKey] && articles[searchKey].hits) || [];
+        const list = (results && results[searchKey] && results[searchKey].hits) || [];
 
-        // if (error) {
-        //     return <p>Что-то произошло не так.</p>
-        // }
+        if (error) {
+            return <p>Что-то произошло не так.</p>
+        }
 
         return (
             <div className='page'>
                 <div className="interactions">
                     <Search
                         value={searchTerm}
-                        onChange={(event) => this.onSearchChange(event, searchWrite)}
-                        onSubmit={(event) => this.onSearchSubmit(event, searchSubmit)}
+                        onChange={(event) => this.onSearchChange(searchWrite, event)}
+                        onSubmit={(event) => this.onSearchSubmit(searchSubmit, event)}
                     >
                         Поиск
                     </Search>
                 </div>
-                {/*{ error*/}
-                    {/*? <div className='interactions'>*/}
-                        {/*<p>Something went wrong.</p>*/}
-                    {/*</div>*/}
-                    {/*: <Table*/}
-                        {/*list={list}*/}
-                        {/*onDismiss={this.onDismiss}*/}
-                    {/*/>*/}
-                {/*}*/}
-                {/*<div className="interactions">*/}
-                    {/*<ButtonWithLoading*/}
-                        {/*isLoading={isLoading}*/}
-                        {/*// onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}*/}
-                        {/*onClick={loadList}*/}
-                    {/*>*/}
-                        {/*Больше историй*/}
-                    {/*</ButtonWithLoading>*/}
-                {/*</div>*/}
+                { error
+                    ? <div className='interactions'>
+                        <p>Something went wrong.</p>
+                    </div>
+                    : <Table
+                        list={list}
+                        onDismiss={this.onDismiss}
+                    />
+                }
+                <div className="interactions">
+                    <ButtonWithLoading
+                        isLoading={isLoading}
+                        onClick={() => this.fetchSearchTopStories(getMoreArticles, searchKey, page + 1)}
+                        // onClick={loadList}
+                    >
+                        Больше историй
+                    </ButtonWithLoading>
+                </div>
             </div>
         );
     }
@@ -160,7 +157,7 @@ const ButtonWithLoading = withLoading(Button);
 //         isLoading: false
 //     };
 // };
-//
+
 // const updateStoriesStateAfterDismiss = (isNotId) => (prevState) => {
 //     const { searchKey, results } = prevState;
 //     const { hits, page } = results[searchKey];
@@ -181,14 +178,13 @@ const mapStateToProps = store => ({
     // searchKey: store.articles.searchKey,
     // error: store.articles.error,
     search: store.search,
+    articles: store.articles,
 });
 
 const mapDispatchToProps = dispatch => ({
     searchWrite: key => dispatch(searchWrite(key)),
     searchSubmit: () => dispatch(searchSubmit()),
-    // loadList: page => dispatch(loadList(page)),
-    // getPhotos: year => dispatch(getPhotos(year)),
-    // handleLogin: () => dispatch(handleLogin()),
+    getMoreArticles: (key, page) => dispatch(getMoreArticles(key, page)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
