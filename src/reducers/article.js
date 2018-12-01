@@ -1,45 +1,40 @@
-import { combineReducers } from 'redux';
-import {DEFAULT_QUERY} from "../constants";
-import {SEARCH_LIST, LOAD_LIST, SORT, DISMISS_ARTICLE} from "../actions/Article";
+import {GET_ARTICLES_REQUEST, GET_ARTICLES_SUCCESS, GET_ARTICLES_FAIL, SORT_ARTICLES, DISMISS_ARTICLE} from "../actions/Article";
 
 const initialState = {
     list: [],
-    searchKey: '',
-    searchTerm: DEFAULT_QUERY,
     error: null,
     isLoading: false,
 };
 
 export function articleReducer(state = initialState, action) {
     switch (action.type) {
-        case SEARCH_LIST:
-            return {
-                ...state,
-                searchKey: action.payload,
-                searchTerm: action.payload,
-                error: '',
-                isLoading: false,
-            };
-
-        case LOAD_LIST:
+        case GET_ARTICLES_REQUEST:
             return {
                 ...state,
                 error: '',
                 isLoading: true,
             };
-
-        case SORT:
+        case GET_ARTICLES_SUCCESS:
+            return {
+                list: [...state.list, action.payload],
+                error: '',
+                isLoading: false,
+            };
+        case GET_ARTICLES_FAIL:
             return {
                 ...state,
-                articles: action.payload,
+                error: action.payload,
+                isLoading: false,
             };
-
+        case SORT_ARTICLES:
+            return {
+                ...state,
+                list: state.list.sort(),
+            };
         case DISMISS_ARTICLE:
             return {
                 ...state,
-                articles: action.payload,
             };
-
         default:
             return state;
     }
