@@ -2,7 +2,7 @@ import {SEARCH_WRITE, SEARCH_SUBMIT} from '../actions/Search';
 import {DEFAULT_QUERY} from "../constants";
 
 const initialState = {
-    searchKey: '',
+    searchKey: DEFAULT_QUERY,
     searchTerm: DEFAULT_QUERY,
 };
 

@@ -12,7 +12,6 @@ class App extends Component {
 
     constructor(props) {
         super(props);
-    //
     //     this.state = {
     //         results: null,
     //         searchKey: '',
@@ -33,18 +32,11 @@ class App extends Component {
     //     return !this.state.results[searchTerm];
     // }
 
-    fetchSearchTopStories(func, searchTerm, page = 0) {
-        func(searchTerm, page);
-        // this.setState({
-        //     isLoading: true
-        // });
-        //
-        // axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
-        //     .then(result => this._isMounted && this.setSearchTopStories(result.data))
-        //     .catch(error => this._isMounted && this.setState({ error }));
+    fetchSearchTopStories(func, searchKey, page = 0) {
+        func(searchKey, page);
     }
 
-    onSearchSubmit(event, func) {
+    onSearchSubmit(func, event) {
         // const { searchTerm } = this.state;
         // this.setState({ searchKey: searchTerm });
         //
@@ -52,6 +44,7 @@ class App extends Component {
         //     this.fetchSearchTopStories(searchTerm);
         // }
         func();
+        this.fetchSearchTopStories(this.props.getMoreArticles, this.props.search.searchKey);
 
         event.preventDefault();
     }
@@ -62,9 +55,10 @@ class App extends Component {
     //     this.setState(updateSearchTopStoriesState(hits, page));
     // }
     //
+
     componentDidMount() {
         this._isMounted = true;
-        this.fetchSearchTopStories(this.props.getMoreArticles, this.props.search.searchTerm);
+        this.fetchSearchTopStories(this.props.getMoreArticles, this.props.search.searchKey);
     }
 
     componentWillUnmount() {
@@ -85,9 +79,7 @@ class App extends Component {
         const { search, articles, searchWrite, searchSubmit, getMoreArticles } = this.props;
         const { searchKey, searchTerm } = search;
         const { results, isLoading, error } = articles;
-        const page = 0;
-        // const page = (articles && articles[searchKey] && articles[searchKey].page) || 0;
-        // const page = 0;
+        const page = (results && results[searchKey] && results[searchKey].page) || 0;
         const list = (results && results[searchKey] && results[searchKey].hits) || [];
 
         if (error) {
@@ -137,27 +129,6 @@ const withLoading = (Component) => ({ isLoading, ...rest }) =>
 
 const ButtonWithLoading = withLoading(Button);
 
-// const updateSearchTopStoriesState = (hits, page) => (prevState) => {
-//     const {searchKey, results} = prevState;
-//
-//     const oldHits = results && results[searchKey]
-//         ? results[searchKey].hits
-//         : [];
-//
-//     const updateHits = [
-//         ...oldHits,
-//         ...hits
-//     ];
-//
-//     return {
-//         results: {
-//             ...results,
-//             [searchKey]: {hits: updateHits, page}
-//         },
-//         isLoading: false
-//     };
-// };
-
 // const updateStoriesStateAfterDismiss = (isNotId) => (prevState) => {
 //     const { searchKey, results } = prevState;
 //     const { hits, page } = results[searchKey];
@@ -173,10 +144,6 @@ const ButtonWithLoading = withLoading(Button);
 // };
 
 const mapStateToProps = store => ({
-    // list: store.articles.list,
-    // searchTerm: store.articles.searchTerm,
-    // searchKey: store.articles.searchKey,
-    // error: store.articles.error,
     search: store.search,
     articles: store.articles,
 });
