@@ -5,7 +5,7 @@ import Table from '../../components/Table';
 import Button from "../../components/Button";
 import {connect} from "react-redux";
 import {searchWrite, searchSubmit} from "../../actions/Search";
-import {getMoreArticles, sortArticles, dismissArticle} from "../../actions/Article";
+import {getMoreArticles, dismissArticle} from "../../actions/Article";
 
 class App extends Component {
     _isMounted = false;
@@ -91,7 +91,6 @@ class App extends Component {
                     <ButtonWithLoading
                         isLoading={isLoading}
                         onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
-                        // onClick={loadList}
                     >
                         Больше историй
                     </ButtonWithLoading>
@@ -122,7 +121,6 @@ const mapDispatchToProps = dispatch => ({
     searchWrite: key => dispatch(searchWrite(key)),
     searchSubmit: () => dispatch(searchSubmit()),
     getMoreArticles: (key, page) => dispatch(getMoreArticles(key, page)),
-    sortArticles: (title) => dispatch(sortArticles(title)),
     dismissArticle: (searchKey, ID) => dispatch(dismissArticle(searchKey, ID)),
 });
 

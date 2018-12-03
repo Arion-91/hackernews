@@ -4,7 +4,6 @@ import {DEFAULT_HPP, PARAM_HPP, PARAM_PAGE, PARAM_SEARCH, PATH_BASE, PATH_SEARCH
 export const GET_ARTICLES_REQUEST = 'GET_ARTICLES_REQUEST';
 export const GET_ARTICLES_SUCCESS = 'GET_ARTICLES_SUCCESS';
 export const GET_ARTICLES_FAIL = 'GET_ARTICLES_REQUEST';
-export const SORT_ARTICLES = 'SORT_ARTICLES';
 export const DISMISS_ARTICLE = 'DISMISS_ARTICLE';
 
 export function getMoreArticles(searchTerm, page) {
@@ -40,13 +39,6 @@ function getArticlesFail(error) {
     return {
         type: GET_ARTICLES_FAIL,
         payload: error,
-    }
-}
-
-export function sortArticles(title) {
-    return {
-        type: SORT_ARTICLES,
-        payload: title,
     }
 }
 

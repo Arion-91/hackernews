@@ -2,7 +2,6 @@ import {
     GET_ARTICLES_REQUEST,
     GET_ARTICLES_SUCCESS,
     GET_ARTICLES_FAIL,
-    SORT_ARTICLES,
     DISMISS_ARTICLE
 } from "../actions/Article";
 
@@ -31,11 +30,6 @@ export function articleReducer(state = initialState, action) {
                 ...state,
                 error: action.payload,
                 isLoading: false,
-            };
-        case SORT_ARTICLES:
-            return {
-                ...state,
-                results: state.results.sort(),
             };
         case DISMISS_ARTICLE:
             return {
