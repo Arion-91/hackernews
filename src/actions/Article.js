@@ -50,9 +50,9 @@ export function sortArticles(title) {
     }
 }
 
-export function dismissArticle(id) {
+export function dismissArticle(searchKey, id) {
     return {
         type: DISMISS_ARTICLE,
-        payload: id,
+        payload: {searchKey, id},
     }
 }

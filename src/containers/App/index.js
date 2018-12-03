@@ -5,20 +5,14 @@ import Table from '../../components/Table';
 import Button from "../../components/Button";
 import {connect} from "react-redux";
 import {searchWrite, searchSubmit} from "../../actions/Search";
-import {getMoreArticles} from "../../actions/Article";
+import {getMoreArticles, sortArticles, dismissArticle} from "../../actions/Article";
 
 class App extends Component {
     _isMounted = false;
 
     constructor(props) {
         super(props);
-    //     this.state = {
-    //         results: null,
-    //         searchKey: '',
-    //         searchTerm: DEFAULT_QUERY,
-    //         error: null,
-    //         isLoading: false
-    //     };
+
         this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
         this.onSearchChange = this.onSearchChange.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
@@ -54,9 +48,8 @@ class App extends Component {
     }
 
     onDismiss(id) {
-        // const isNotId = item => item.objectID !== id;
-        //
-        // this.setState(updateStoriesStateAfterDismiss(isNotId))
+        const { searchKey, dismissArticle } = this.props;
+        dismissArticle(searchKey, id);
     };
 
     onSearchChange(event) {
@@ -117,20 +110,6 @@ const withLoading = (Component) => ({ isLoading, ...rest }) =>
 
 const ButtonWithLoading = withLoading(Button);
 
-// const updateStoriesStateAfterDismiss = (isNotId) => (prevState) => {
-//     const { searchKey, results } = prevState;
-//     const { hits, page } = results[searchKey];
-//
-//     const updatedList = hits.filter(isNotId);
-//
-//     return {
-//         results: {
-//             ...results,
-//             [searchKey]: {hits: updatedList, page}
-//         }
-//     };
-// };
-
 const mapStateToProps = store => ({
     searchKey: store.search.searchKey,
     searchTerm: store.search.searchTerm,
@@ -143,6 +122,8 @@ const mapDispatchToProps = dispatch => ({
     searchWrite: key => dispatch(searchWrite(key)),
     searchSubmit: () => dispatch(searchSubmit()),
     getMoreArticles: (key, page) => dispatch(getMoreArticles(key, page)),
+    sortArticles: (title) => dispatch(sortArticles(title)),
+    dismissArticle: (searchKey, ID) => dispatch(dismissArticle(searchKey, ID)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

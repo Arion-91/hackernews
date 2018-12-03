@@ -32,15 +32,16 @@ export function articleReducer(state = initialState, action) {
                 error: action.payload,
                 isLoading: false,
             };
-        // case SORT_ARTICLES:
-        //     return {
-        //         ...state,
-        //         list: state.results.sort(),
-        //     };
-        // case DISMISS_ARTICLE:
-        //     return {
-        //         ...state,
-        //     };
+        case SORT_ARTICLES:
+            return {
+                ...state,
+                results: state.results.sort(),
+            };
+        case DISMISS_ARTICLE:
+            return {
+                ...state,
+                results: updateStoriesAfterDismiss(state.results, action.payload),
+            };
         default:
             return state;
     }
@@ -62,5 +63,16 @@ const updateSearchTopStoriesState = (prevState, {searchTerm, hits, page}) => {
     return {
         ...results,
         [searchKey]: {hits: updateHits, page}
+    };
+};
+
+const updateStoriesAfterDismiss = (results, {searchKey, id}) => {
+    const { hits, page } = results[searchKey];
+
+    const updatedList = hits.filter(value => value.objectID !== id);
+
+    return {
+        ...results,
+        [searchKey]: {hits: updatedList, page}
     };
 };
