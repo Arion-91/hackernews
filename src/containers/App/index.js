@@ -19,46 +19,31 @@ class App extends Component {
     //         error: null,
     //         isLoading: false
     //     };
-    //
-    //     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
-    //     this.setSearchTopStories = this.setSearchTopStories.bind(this);
         this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
-    //     this.onSearchChange = this.onSearchChange.bind(this);
+        this.onSearchChange = this.onSearchChange.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
         this.onDismiss = this.onDismiss.bind(this);
     }
-    //
-    // needsToSearchTopStories(searchTerm) {
-    //     return !this.state.results[searchTerm];
-    // }
 
-    fetchSearchTopStories(func, searchKey, page = 0) {
-        func(searchKey, page);
+    fetchSearchTopStories(searchKey, page = 0) {
+        const getMoreArticles = this.props.getMoreArticles;
+        getMoreArticles(searchKey, page);
     }
 
-    onSearchSubmit(func, event) {
-        // const { searchTerm } = this.state;
-        // this.setState({ searchKey: searchTerm });
-        //
-        // if (this.needsToSearchTopStories(searchTerm)) {
-        //     this.fetchSearchTopStories(searchTerm);
-        // }
-        func();
-        this.fetchSearchTopStories(this.props.getMoreArticles, this.props.search.searchKey);
+    onSearchSubmit(event) {
+        const { searchKey, searchTerm, searchSubmit } = this.props;
+        searchSubmit();
+
+        if (searchTerm !== searchKey) {
+            this.fetchSearchTopStories(searchTerm);
+        }
 
         event.preventDefault();
     }
 
-    // setSearchTopStories(result) {
-    //     const { hits, page } = result;
-    //
-    //     this.setState(updateSearchTopStoriesState(hits, page));
-    // }
-    //
-
     componentDidMount() {
         this._isMounted = true;
-        this.fetchSearchTopStories(this.props.getMoreArticles, this.props.search.searchKey);
+        this.fetchSearchTopStories(this.props.searchKey);
     }
 
     componentWillUnmount() {
@@ -70,15 +55,15 @@ class App extends Component {
         //
         // this.setState(updateStoriesStateAfterDismiss(isNotId))
     };
-    //
-    onSearchChange(func, event) {
-        func(event.target.value);
+
+    onSearchChange(event) {
+        const { searchWrite } = this.props;
+        searchWrite(event.target.value);
     }
 
     render() {
-        const { search, articles, searchWrite, searchSubmit, getMoreArticles } = this.props;
-        const { searchKey, searchTerm } = search;
-        const { results, isLoading, error } = articles;
+        const { searchKey, searchTerm } = this.props;
+        const { results, isLoading, error } = this.props;
         const page = (results && results[searchKey] && results[searchKey].page) || 0;
         const list = (results && results[searchKey] && results[searchKey].hits) || [];
 
@@ -91,8 +76,8 @@ class App extends Component {
                 <div className="interactions">
                     <Search
                         value={searchTerm}
-                        onChange={(event) => this.onSearchChange(searchWrite, event)}
-                        onSubmit={(event) => this.onSearchSubmit(searchSubmit, event)}
+                        onChange={(event) => this.onSearchChange(event)}
+                        onSubmit={(event) => this.onSearchSubmit(event)}
                     >
                         Поиск
                     </Search>
@@ -109,7 +94,7 @@ class App extends Component {
                 <div className="interactions">
                     <ButtonWithLoading
                         isLoading={isLoading}
-                        onClick={() => this.fetchSearchTopStories(getMoreArticles, searchKey, page + 1)}
+                        onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
                         // onClick={loadList}
                     >
                         Больше историй
@@ -144,8 +129,11 @@ const ButtonWithLoading = withLoading(Button);
 // };
 
 const mapStateToProps = store => ({
-    search: store.search,
-    articles: store.articles,
+    searchKey: store.search.searchKey,
+    searchTerm: store.search.searchTerm,
+    results: store.articles.results,
+    isLoading: store.articles.isLoading,
+    error: store.articles.error,
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -12,7 +12,7 @@ export function getMoreArticles(searchTerm, page) {
     // несколько действий пока будет выполняться обращение к API
     return dispatch => {
         dispatch(getArticlesRequest());
-        console.log(searchTerm + ' ' + page);
+        // console.log(searchTerm + ' ' + page);
         axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
             .then(result => dispatch(getArticlesSuccess({
                 searchTerm,
