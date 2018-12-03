@@ -26,8 +26,11 @@ class App extends Component {
     }
 
     fetchSearchTopStories(searchKey, page = 0) {
-        const getMoreArticles = this.props.getMoreArticles;
-        getMoreArticles(searchKey, page);
+        const { results, getMoreArticles } = this.props;
+
+        if (!results || !results[searchKey] || results[searchKey].page < page) {
+            getMoreArticles(searchKey, page);
+        }
     }
 
     onSearchSubmit(event) {
